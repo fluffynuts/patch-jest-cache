@@ -1,0 +1,55 @@
+{
+  "name": "tweak-jest-cache",
+  "version": "0.0.1",
+  "description": "tweaks jest caching to work around an issue outstanding since 2017",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "clean-dist": "rimraf dist",
+    "generate-index": "node generate-index.js",
+    "prebuild": "run-p clean-dist generate-index",
+    "build": "tsc",
+    "lint": "tslint -p .",
+    "pretest": "rimraf .jest-cache",
+    "zarro": "zarro",
+    "prerelease": "run-s build lint test",
+    "release": "cross-env VERSION_INCREMENT_STRATEGY=minor run-s \"zarro release-npm\"",
+    "prerelease-beta": "run-s build lint test",
+    "release-beta": "cross-env BETA=1 VERSION_INCREMENT_STRATEGY=patch run-s \"zarro release-npm\"",
+    "start": "ts-node src/tweak-jest-cache-cli.ts"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Davyd McColl",
+    "email": "davydm@gmail.com"
+  },
+  "license": "BSD-3-Clause",
+  "files": [
+    "dist/**/*",
+    "index.js",
+    "index.d.ts"
+  ],
+  "devDependencies": {
+    "@types/faker": "^5.5.5",
+    "@types/jest": "^26.0.23",
+    "@types/yargs": "^16.0.2",
+    "cross-env": "^7.0.3",
+    "expect-even-more-jest": "^1.12.0",
+    "faker": "^5.5.3",
+    "jest": "^26.6.3",
+    "npm-run-all": "^4.1.5",
+    "rimraf": "^3.0.2",
+    "ts-jest": "^26.5.6",
+    "ts-node": "^9.1.1",
+    "tslint": "^6.1.3",
+    "typescript": "^4.2.4",
+    "yafs": "^1.14.0",
+    "zarro": "^1.91.0"
+  },
+  "dependencies": {
+    "yargs": "^17.0.1"
+  },
+  "bin": {
+    "tweak-jest-cache": "./dist/tweak-jest-cache-cli.js"
+  }
+}
