@@ -72,4 +72,9 @@ describe(`tweak-jest-cache`, () => {
     // };
 
 
+    /*
+    See the outstanding PR for inspiration here:
+    https://github.com/facebook/jest/pull/11423/files
+    */
+
 });
