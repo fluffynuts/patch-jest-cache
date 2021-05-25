@@ -1,11 +1,13 @@
+import { splitLines } from "./split-lines";
+
 export function extractFunction(code: string, functionName: string): string {
     let
         inFunction = false,
         braceCount = 0;
     const
-        pureRegex = new RegExp(`function\\s+${functionName}\\s*\\(`),
-        assignRegex = new RegExp(`\\b${functionName}\\s*=\\s*(function|\\()`),
-        lines = code.split(/[\r\n]/g),
+        pureRegex = createFunctionDeclarationRegexFor(functionName),
+        assignRegex = createFunctionAssignRegexFor(functionName),
+        lines = splitLines(code),
         result = lines.reduce(
             (acc, cur) => {
                 if (cur.match(pureRegex) || cur.match(assignRegex)) {
@@ -22,6 +24,14 @@ export function extractFunction(code: string, functionName: string): string {
                 return acc;
             }, [] as string[]);
     return result.join("\n");
+}
+
+export function createFunctionDeclarationRegexFor(functionName: string): RegExp {
+    return new RegExp(`function\\s+${functionName}\\s*\\(`);
+}
+
+export function createFunctionAssignRegexFor(functionName: string): RegExp {
+    return new RegExp(`\\b${functionName}\\s*=\\s*(function|\\(?[a-zA-Z0-9_, ]*\\)?\\s*=>)`);
 }
 
 function countLeftBracesIn(str: string): number {

@@ -73,4 +73,25 @@ describe(`extract-function`, () => {
             }`);
     });
 
+    it(`should find the const-defined function with one parameter, no parens in the code`, async () => {
+        // Arrange
+        const
+            code = `
+            const moo = left => {
+                return "moo";
+            }
+            function cow() {
+                return "cow";
+            }
+            `;
+        // Act
+        const result = await extractFunction(code, "moo");
+        // Assert
+        expect(result)
+            .toEqual(
+`            const moo = left => {
+                return "moo";
+            }`);
+    });
+
 });
