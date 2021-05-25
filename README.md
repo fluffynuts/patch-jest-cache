@@ -1,6 +1,7 @@
 patch-jest-cache
 ---
 patches jest caching to work around an issue outstanding since 2017
+[cache write race condition across processes ](https://github.com/facebook/jest/issues/4444)
 
 - make caching opportunistic: if it works, great, if it fails, c'est la vie!
   - caching should be to improve performance, _not_ a lynchpin
