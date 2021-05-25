@@ -16,7 +16,7 @@
     "release": "cross-env VERSION_INCREMENT_STRATEGY=minor run-s \"zarro release-npm\"",
     "prerelease-beta": "run-s build lint test",
     "release-beta": "cross-env BETA=1 VERSION_INCREMENT_STRATEGY=patch run-s \"zarro release-npm\"",
-    "start": "ts-node src/tweak-jest-cache-cli.ts"
+    "start": "ts-node src/patch-jest-cache-cli.ts"
   },
   "keywords": [],
   "author": {
@@ -50,6 +50,6 @@
     "yargs": "^17.0.1"
   },
   "bin": {
-    "tweak-jest-cache": "./dist/tweak-jest-cache-cli.js"
+    "patch-jest-cache": "./dist/patch-jest-cache-cli.js"
   }
 }

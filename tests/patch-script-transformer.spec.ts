@@ -6,7 +6,7 @@ import { patchScriptTransformer } from "../src/patch-script-transformer";
 import { defaultOptions } from "../src/gather-args";
 import { splitLines } from "../src/split-lines";
 
-describe(`tweak-jest-cache`, () => {
+describe(`patch-script-transformer`, () => {
     describe(`default behavior`, () => {
         it(`should make the readCacheFile function opportunistic & warning`, async () => {
             // Arrange
