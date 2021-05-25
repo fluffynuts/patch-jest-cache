@@ -5,8 +5,11 @@ import { readScriptTransformer } from "./read-script-transformer";
 import { writeTextFile } from "yafs";
 import { patchScriptTransformer } from "./patch-script-transformer";
 import { ExecStepContext } from "exec-step";
+import { resolve } from "path";
 
 export async function patchJestCache(options: PatchOptions): Promise<void> {
+    process.chdir(resolve(options.in));
+
     const
         scriptTransformerPath = await findScriptTransformer(),
         ctx = new ExecStepContext();
