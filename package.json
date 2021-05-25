@@ -46,6 +46,7 @@
     "zarro": "^1.91.0"
   },
   "dependencies": {
+    "exec-step": "^0.4.0",
     "yafs": "^1.14.0",
     "yargs": "^17.0.1"
   },

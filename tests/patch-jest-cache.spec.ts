@@ -46,6 +46,8 @@ describe(`patch-jest-cache`, () => {
         describe(`happy path`, () => {
             it(`should restore any existing backup, back up again, find & read script transformer, patch & rewrite`, async () => {
                 // Arrange
+                spyOn(process.stdout, "write");
+                spyOn(process.stderr, "write");
                 const
                     options = {
                         ...defaultOptions,
@@ -76,6 +78,13 @@ describe(`patch-jest-cache`, () => {
                         filePath,
                         updated
                     )
+
+                expect(process.stdout.write)
+                    .toHaveBeenCalledWith(
+                        jasmine.stringMatching(/.*patching.*/)
+                    );
+                expect(process.stderr.write)
+                    .not.toHaveBeenCalled();
             });
         });
     });
