@@ -20,3 +20,10 @@ npx patch-jest-cache {options}
 - specify `--no-warn-on-errors` to suppress warning messages
 - specify `--disable-read-cache` or `--disable-write-cache` to completely
   disable cache read / write
+
+
+reverting
+---
+
+either run `npx patch-jest-cache --revert` or re-install your node_modules, eg
+with `npm ci`
