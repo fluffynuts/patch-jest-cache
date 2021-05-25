@@ -1,6 +1,6 @@
 {
   "name": "patch-jest-cache",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "patches jest caching to work around an issue outstanding since 2017",
   "main": "index.js",
   "scripts": {
