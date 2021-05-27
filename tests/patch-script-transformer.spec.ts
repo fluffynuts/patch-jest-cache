@@ -19,7 +19,7 @@ describe(`patch-script-transformer`, () => {
             // Act
             const result = patchScriptTransformer(
                 scriptTransformerCode,
-                { ...defaultOptions, aggressive: false }
+                defaultOptions
             );
             // Assert
             const
@@ -55,84 +55,12 @@ const readCacheFile = (cachePath) => {
             // Act
             const result = patchScriptTransformer(
                 scriptTransformerCode,
-                { ...defaultOptions, aggressive: false }
+                defaultOptions
             );
             // Assert
             const
                 renamed = extractFunction(result, "originalWriteCacheFile"),
                 beforeLines = splitLines(before),
-                renamedLines = splitLines(renamed);
-            // renamed function should still have the same body
-            expect(beforeLines.slice(1))
-                .toEqual(renamedLines.slice(1));
-
-            const wrapper = extractFunction(result, "writeCacheFile");
-            expect(wrapper.trim())
-                .toEqual(`
-const writeCacheFile = (cachePath, fileData) => {
-    try {
-        return originalWriteCacheFile(cachePath, fileData);
-    } catch (e) {
-        console.warn(\`Error writing cache file at \${cachePath}: \${e}\`);
-    }
-};
-                `.trim());
-        });
-    });
-    describe(`aggressive behavior`, () => {
-        it(`should make the readCacheFile function opportunistic & warning & smoosh the throw`, async () => {
-            // Arrange
-            const
-                scriptTransformerFile = await findScriptTransformer(),
-                scriptTransformerCode = await readTextFile(scriptTransformerFile),
-                before = extractFunction(scriptTransformerCode, "readCacheFile");
-            expect(before)
-                .not.toBeEmptyString();
-            // Act
-            const result = patchScriptTransformer(
-                scriptTransformerCode,
-                defaultOptions
-            );
-            // Assert
-            const
-                renamed = extractFunction(result, "originalReadCacheFile"),
-                beforeLines = splitLines(before.replace("throw e;", "console.warn(e.message); return null;")),
-                renamedLines = splitLines(renamed);
-            // renamed function should still have the same body
-            expect(beforeLines.slice(1))
-                .toEqual(renamedLines.slice(1));
-
-            const wrapper = extractFunction(result, "readCacheFile");
-            expect(wrapper.trim())
-                .toEqual(`
-const readCacheFile = (cachePath) => {
-    try {
-        return originalReadCacheFile(cachePath);
-    } catch (e) {
-        console.warn(\`Error reading cache file at \${cachePath}: \${e}\`);
-        return null;
-    }
-};
-                `.trim());
-        });
-
-        it(`should make the writeCacheFile function opportunistic & warning & smoosh the throw`, async () => {
-            // Arrange
-            const
-                scriptTransformerFile = await findScriptTransformer(),
-                scriptTransformerCode = await readTextFile(scriptTransformerFile),
-                before = extractFunction(scriptTransformerCode, "writeCacheFile");
-            expect(before)
-                .not.toBeEmptyString();
-            // Act
-            const result = patchScriptTransformer(
-                scriptTransformerCode,
-                defaultOptions
-            );
-            // Assert
-            const
-                renamed = extractFunction(result, "originalWriteCacheFile"),
-                beforeLines = splitLines(before.replace("throw e;", "console.warn(e.message);")),
                 renamedLines = splitLines(renamed);
             // renamed function should still have the same body
             expect(beforeLines.slice(1))
@@ -164,7 +92,7 @@ const writeCacheFile = (cachePath, fileData) => {
             // Act
             const result = patchScriptTransformer(
                 scriptTransformerCode,
-                { ...defaultOptions, "warn-on-errors": false, aggressive: false }
+                { ...defaultOptions, "warn-on-errors": false }
             );
             // Assert
             const
@@ -200,7 +128,7 @@ const readCacheFile = (cachePath) => {
             // Act
             const result = patchScriptTransformer(
                 scriptTransformerCode,
-                { ...defaultOptions, "warn-on-errors": false, aggressive: false }
+                { ...defaultOptions, "warn-on-errors": false }
             );
             // Assert
             const

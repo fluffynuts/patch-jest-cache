@@ -13,22 +13,8 @@ export function patchScriptTransformer(
     options: PatchOptions
 ): string {
     const
-        withReadCacheFilePatched = patchReadCache(scriptTransformerCode, options),
-        result = patchWriteCache(withReadCacheFilePatched, options);
-    if (!options.aggressive) {
-        return result;
-    }
-    return aggressivelySuppressCacheErrorsOn(result);
-}
-
-function aggressivelySuppressCacheErrorsOn(code: string): string {
-    const
-        readCache = extractFunction(code, originalReadCacheFileFn),
-        suppressedRead = readCache.replace("throw e;", "console.warn(e.message); return null;"),
-        writeCache = extractFunction(code, originalWriteCacheFileFn),
-        suppressedWrite = writeCache.replace("throw e;", "console.warn(e.message);");
-    return code.replace(readCache, suppressedRead)
-        .replace(writeCache, suppressedWrite);
+        withReadCacheFilePatched = patchReadCache(scriptTransformerCode, options);
+    return patchWriteCache(withReadCacheFilePatched, options);
 }
 
 function patchWriteCache(

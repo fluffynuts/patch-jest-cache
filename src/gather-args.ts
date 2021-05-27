@@ -6,7 +6,6 @@ export interface PatchOptions {
     "revert": boolean;
     "warn-on-errors": boolean;
     "in": string;
-    "aggressive": boolean;
 }
 
 export const defaultOptions: PatchOptions = {
@@ -14,8 +13,7 @@ export const defaultOptions: PatchOptions = {
     "disable-read-cache": false,
     revert: false,
     "warn-on-errors": true,
-    "in": process.cwd(),
-    "aggressive": true
+    "in": process.cwd()
 }
 
 export function gatherArgs(): PatchOptions {
@@ -38,11 +36,6 @@ export function gatherArgs(): PatchOptions {
         demandOption: false,
         default: defaultOptions["warn-on-errors"],
         description: "print out warnings on cache errors",
-        type: "boolean"
-    }).option("aggressive", {
-        demandOption: false,
-        default: defaultOptions.aggressive,
-        description: "aggressively suppress errors",
         type: "boolean"
     }).option("in", {
         demandOption: false,
