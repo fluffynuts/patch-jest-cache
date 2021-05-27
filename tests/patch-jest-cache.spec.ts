@@ -5,17 +5,21 @@ const noop = () => {
 }
 const backupMock = {
     backUpScriptTransformer: noop,
-    restoreScriptTransformer: noop
+    backUpRuntimeScriptTransformer: noop,
+    restoreScriptTransformer: noop,
+    restoreRuntimeScriptTransformer: noop
 };
 jest.doMock("../src/back-up-script-transformer", () => backupMock);
 
 const findMock = {
-    findScriptTransformer: noop
+    findScriptTransformer: noop,
+    findRuntimeScriptTransformer: noop
 }
 jest.doMock("../src/find-script-transformer", () => findMock);
 
 const readMock = {
-    readScriptTransformer: noop
+    readScriptTransformer: noop,
+    readRuntimeScriptTransformer: noop
 }
 jest.doMock("../src/read-script-transformer", () => readMock);
 
