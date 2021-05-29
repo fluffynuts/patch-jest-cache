@@ -23,7 +23,12 @@
   "keywords": [],
   "author": {
     "name": "Davyd McColl",
-    "email": "davydm@gmail.com"
+    "email": "davydm@gmail.com",
+    "url": "https://github.com/fluffynuts/patch-jest-cache"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/fluffynuts/patch-jest-cache"
   },
   "license": "BSD-3-Clause",
   "files": [
