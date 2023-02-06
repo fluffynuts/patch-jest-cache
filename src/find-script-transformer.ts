@@ -21,8 +21,8 @@ export async function findScriptTransformer(): Promise<string> {
             (acc, cur) => cur.length < acc.length ? cur : acc,
             search[0]
         );
-        console.warn(`multiple matches for ScriptTransformer under ${ baseJestSearch }`, search);
-        console.warn(`selecting ${shortest}`);
+        console.warn(`WARNING: multiple matches for ScriptTransformer under ${ baseJestSearch }\n- ${search.join("\n- ")}`);
+        console.warn(`= selecting ${shortest} as it's likely the ScriptTransformer I'm looking for =`);
         search.splice(0);
         search.push(shortest);
     }
