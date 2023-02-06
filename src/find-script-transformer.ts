@@ -17,6 +17,7 @@ export async function findScriptTransformer(): Promise<string> {
         throw new Error(`Unable to find ScriptTransformer.js under ${ baseJestSearch }`);
     }
     if (search.length > 1) {
+        console.error(`multiple matches for ScriptTransformer under ${ baseJestSearch }`, search);
         throw new Error(`Multiple matches for ScriptTransformer.js under ${ baseJestSearch }:\n${ search.join("\n") }`);
     }
     return cachedScriptTransformerPath = search[0];
