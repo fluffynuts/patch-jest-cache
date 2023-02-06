@@ -17,8 +17,14 @@ export async function findScriptTransformer(): Promise<string> {
         throw new Error(`Unable to find ScriptTransformer.js under ${ baseJestSearch }`);
     }
     if (search.length > 1) {
-        console.error(`multiple matches for ScriptTransformer under ${ baseJestSearch }`, search);
-        throw new Error(`Multiple matches for ScriptTransformer.js under ${ baseJestSearch }:\n${ search.join("\n") }`);
+        const shortest = search.reduce(
+            (acc, cur) => cur.length < acc.length ? cur : acc,
+            search[0]
+        );
+        console.warn(`multiple matches for ScriptTransformer under ${ baseJestSearch }`, search);
+        console.warn(`selecting ${shortest}`);
+        search.splice(0);
+        search.push(shortest);
     }
     return cachedScriptTransformerPath = search[0];
 }
