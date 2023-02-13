@@ -1,12 +1,16 @@
 import { PatchOptions } from "./gather-args";
 import {
     BackupResults, backUpRuntimeScriptTransformer,
-    backUpScriptTransformer,
+    backUpScriptTransformers,
     RestoreResults, restoreRuntimeScriptTransformer,
-    restoreScriptTransformer
-} from "./back-up-script-transformer";
-import { findRuntimeScriptTransformer, findScriptTransformer } from "./find-script-transformer";
-import { readRuntimeScriptTransformer, readScriptTransformer } from "./read-script-transformer";
+    restoreScriptTransformers
+} from "./back-up-script-transformers";
+import { findRuntimeScriptTransformers, findScriptTransformers } from "./find-script-transformers";
+import {
+    readRuntimeScriptTransformers,
+    readScriptTransformers,
+    TextFile
+} from "./read-script-transformers";
 import { writeTextFile } from "yafs";
 import { patchScriptTransformer } from "./patch-script-transformer";
 import { ExecStepContext } from "exec-step";
@@ -30,10 +34,10 @@ function patchJestCacheRuntimeScriptTransformer(
     return patchWith(
         options,
         ctx,
-        findRuntimeScriptTransformer,
+        findRuntimeScriptTransformers,
         restoreRuntimeScriptTransformer,
         backUpRuntimeScriptTransformer,
-        readRuntimeScriptTransformer
+        readRuntimeScriptTransformers
     )
 }
 
@@ -44,38 +48,42 @@ function patchJestCacheScriptTransformer(
     return patchWith(
         options,
         ctx,
-        findScriptTransformer,
-        restoreScriptTransformer,
-        backUpScriptTransformer,
-        readScriptTransformer
+        findScriptTransformers,
+        restoreScriptTransformers,
+        backUpScriptTransformers,
+        readScriptTransformers
     );
 }
 
 async function patchWith(
     options: PatchOptions,
     ctx: ExecStepContext,
-    finder: () => Promise<string>,
-    restore: () => Promise<RestoreResults>,
-    backup: () => Promise<BackupResults>,
-    read: () => Promise<string>
+    finder: () => Promise<string[]>,
+    restoreAll: () => Promise<RestoreResults>,
+    backupAll: () => Promise<BackupResults>,
+    read: () => Promise<TextFile[]>
 ) {
-    const targetPath = await finder();
-    if (!targetPath) {
+    const targetPaths = await finder();
+    if (!targetPaths) {
         return;
     }
     if (options.revert) {
-        return revert(ctx, targetPath, restore);
+        return revert(ctx, targetPaths, restoreAll);
     }
-    await ctx.exec(
-        `patching ${ targetPath }`,
-        async () => {
-            await restore(); // ignore errors & always start from scratch
-            await backup(); // always have a backup before modifying
-            const
-                code = await read(),
-                updatedCode = patchScriptTransformer(code, options);
-            await writeTextFile(targetPath, updatedCode);
-        });
+    await restoreAll(); // ignore errors & always start from scratch
+    await backupAll(); // always have a backup before modifying
+    const targets = await read();
+    for (const target of targets) {
+        await ctx.exec(
+            `patching ${ target.path }`,
+            async () => {
+                const
+                    code = target.contents,
+                    updatedCode = patchScriptTransformer(code, options);
+                await writeTextFile(target.path, updatedCode);
+            }
+        );
+    }
 }
 
 
@@ -94,20 +102,20 @@ async function runIn(
 
 async function revert(
     ctx: ExecStepContext,
-    target: string,
+    targets: string[],
     restore: () => Promise<RestoreResults>
 ): Promise<void> {
-    const finalResult = await ctx.exec(`reverting ${ target }`,
+    const finalResult = await ctx.exec(`reverting\n- ${ targets.join("\n- ") }`,
         async () => {
             const result = await restore();
             if (result === RestoreResults.fail) {
-                throw new Error(`Unable to restore ${ target }`);
+                throw new Error(`Unable to restore\n- ${ targets.join("\n- ") }`);
             }
             return result;
         }
     );
     if (finalResult === RestoreResults.noBackupFound) {
-        console.warn(`No backup was found for ${ target } - have you patched it before?`);
+        console.warn(`No backup was found for\n- ${ targets.join("\n- ") }\nHave you patched before?`);
     }
     return;
 }

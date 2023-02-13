@@ -1,5 +1,5 @@
 import "expect-even-more-jest";
-import { findScriptTransformer } from "../src/find-script-transformer";
+import { findScriptTransformers } from "../src/find-script-transformers";
 import { readTextFile } from "yafs";
 import { extractFunction } from "../src/extract-function";
 import { patchScriptTransformer } from "../src/patch-script-transformer";
@@ -11,7 +11,7 @@ describe(`patch-script-transformer`, () => {
         it(`should make the readCacheFile function opportunistic & warning`, async () => {
             // Arrange
             const
-                scriptTransformerFile = await findScriptTransformer(),
+                scriptTransformerFile = (await findScriptTransformers())[0],
                 scriptTransformerCode = await readTextFile(scriptTransformerFile),
                 before = extractFunction(scriptTransformerCode, "readCacheFile");
             expect(before)
@@ -47,7 +47,7 @@ const readCacheFile = (cachePath) => {
         it(`should make the writeCacheFile function opportunistic & warning`, async () => {
             // Arrange
             const
-                scriptTransformerFile = await findScriptTransformer(),
+                scriptTransformerFile = (await findScriptTransformers())[0],
                 scriptTransformerCode = await readTextFile(scriptTransformerFile),
                 before = extractFunction(scriptTransformerCode, "writeCacheFile");
             expect(before)
@@ -84,7 +84,7 @@ const writeCacheFile = (cachePath, fileData) => {
         it(`should make the readCacheFile function opportunistic & quiet`, async () => {
             // Arrange
             const
-                scriptTransformerFile = await findScriptTransformer(),
+                scriptTransformerFile = (await findScriptTransformers())[0],
                 scriptTransformerCode = await readTextFile(scriptTransformerFile),
                 before = extractFunction(scriptTransformerCode, "readCacheFile");
             expect(before)
@@ -120,7 +120,7 @@ const readCacheFile = (cachePath) => {
         it(`should make the writeCacheFile function opportunistic & quiet`, async () => {
             // Arrange
             const
-                scriptTransformerFile = await findScriptTransformer(),
+                scriptTransformerFile = (await findScriptTransformers())[0],
                 scriptTransformerCode = await readTextFile(scriptTransformerFile),
                 before = extractFunction(scriptTransformerCode, "writeCacheFile");
             expect(before)
@@ -157,7 +157,7 @@ const writeCacheFile = (cachePath, fileData) => {
         it(`should make the writeCacheFile function into a no-op`, async () => {
             // Arrange
             const
-                scriptTransformerFile = await findScriptTransformer(),
+                scriptTransformerFile = (await findScriptTransformers())[0],
                 scriptTransformerCode = await readTextFile(scriptTransformerFile),
                 before = extractFunction(scriptTransformerCode, "writeCacheFile");
             expect(before)
@@ -181,7 +181,7 @@ const writeCacheFile = (cachePath, fileData) => {
         it(`should make the readCacheFile function into a no-op`, async () => {
             // Arrange
             const
-                scriptTransformerFile = await findScriptTransformer(),
+                scriptTransformerFile = (await findScriptTransformers())[0],
                 scriptTransformerCode = await readTextFile(scriptTransformerFile),
                 before = extractFunction(scriptTransformerCode, "readCacheFile");
             expect(before)

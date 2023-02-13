@@ -4,24 +4,24 @@ const noop = () => {
     // intentionally left blank
 }
 const backupMock = {
-    backUpScriptTransformer: noop,
-    backUpRuntimeScriptTransformer: noop,
-    restoreScriptTransformer: noop,
-    restoreRuntimeScriptTransformer: noop
+    backUpScriptTransformers: noop,
+    backUpRuntimeScriptTransformers: noop,
+    restoreScriptTransformers: noop,
+    restoreRuntimeScriptTransformers: noop
 };
-jest.doMock("../src/back-up-script-transformer", () => backupMock);
+jest.doMock("../src/back-up-script-transformers", () => backupMock);
 
 const findMock = {
-    findScriptTransformer: noop,
-    findRuntimeScriptTransformer: noop
+    findScriptTransformers: noop,
+    findRuntimeScriptTransformers: noop
 }
-jest.doMock("../src/find-script-transformer", () => findMock);
+jest.doMock("../src/find-script-transformers", () => findMock);
 
 const readMock = {
-    readScriptTransformer: noop,
-    readRuntimeScriptTransformer: noop
+    readScriptTransformers: noop,
+    readRuntimeScriptTransformers: noop
 }
-jest.doMock("../src/read-script-transformer", () => readMock);
+jest.doMock("../src/read-script-transformers", () => readMock);
 
 const yafsMock = {
     writeTextFile: noop
@@ -60,17 +60,20 @@ describe(`patch-jest-cache`, () => {
                     filePath = faker.datatype.string(32),
                     code = faker.random.words(),
                     updated = faker.random.words();
-                (findMock.findScriptTransformer as jasmine.Spy).and.returnValue(filePath);
-                (readMock.readScriptTransformer as jasmine.Spy).and.returnValue(code);
+                (findMock.findScriptTransformers as jasmine.Spy).and.returnValue([filePath]);
+                (readMock.readScriptTransformers as jasmine.Spy).and.returnValue([{
+                    path: filePath,
+                    contents: code
+                }]);
                 (patchMock.patchScriptTransformer as jasmine.Spy).and.callFake(
                     (original, opts) => original === code ? updated : original
                 );
                 // Act
                 await patchJestCache(options);
                 // Assert
-                expect(findMock.findScriptTransformer)
+                expect(findMock.findScriptTransformers)
                     .toHaveBeenCalledOnce();
-                expect(readMock.readScriptTransformer)
+                expect(readMock.readScriptTransformers)
                     .toHaveBeenCalledOnce();
                 expect(patchMock.patchScriptTransformer)
                     .toHaveBeenCalledOnceWith(

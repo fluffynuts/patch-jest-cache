@@ -6,6 +6,10 @@
   "scripts": {
     "pretest": "run-p clean-jest-cache revert",
     "test": "jest",
+    "clean-test": "run-s reinstall-modules test",
+    "reinstall-modules": "run-s trash-modules install-modules",
+    "trash-modules": "rimraf node_modules",
+    "install-modules": "npm ci",
     "clean-jest-cache": "rimraf .jest-cache",
     "clean-dist": "rimraf dist",
     "generate-index": "node generate-index.js",
